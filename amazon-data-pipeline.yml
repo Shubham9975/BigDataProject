@@ -1,0 +1,59 @@
+name: Amazon Customer Sales Pipeline
+
+on:
+  workflow_dispatch:
+
+env:
+  S3_BUCKET: "s3://smalldataset1/"
+  GLUE_DATABASE: "smalldatabase"
+  EMR_CLUSTER_NAME: "amazon-sales-cluster"
+  REGION: "us-east-1"
+  CRAWLER_NAME: "amazon_data_crawler"
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Set up AWS CLI
+    - name: Configure AWS CLI
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set region ${{ env.REGION }}
+        aws configure set aws_session_token ${{ secrets.AWS_SESSION_TOKEN }} 
+
+    # Step 2: Run EMR Job
+    - name: Submit EMR Job
+      run: |
+        aws emr create-cluster \
+          --name ${{ env.EMR_CLUSTER_NAME }} \
+          --release-label emr-6.7.0 \
+          --applications Name=Spark \
+          --ec2-attributes KeyName=EC2_Ankit,InstanceProfile=EMR_EC2_DefaultRole \
+          --service-role EMR_DefaultRole \
+          --instance-groups '[{"InstanceGroupType":"MASTER","InstanceType":"m5.xlarge","InstanceCount":1},
+                              {"InstanceGroupType":"CORE","InstanceType":"m5.xlarge","InstanceCount":1}]' \
+          --steps '[{
+              "Name": "Spark job",
+              "ActionOnFailure": "CONTINUE",
+              "Jar": "command-runner.jar",
+              "Args": ["spark-submit", "--deploy-mode", "cluster", "s3://emr-sparkjob-script/scripts/transform_ok.py"]
+          }]' \
+          --log-uri s3://amazonathenaquery/logs/ \
+          --auto-terminate
+
+    # Step 3: Create Glue Crawler (if not exists)
+    - name: Create Glue Crawler
+      run: |
+        aws glue create-crawler \
+          --name ${{ env.CRAWLER_NAME }} \
+          --role LabRole \
+          --database-name ${{ env.GLUE_DATABASE }} \
+          --targets S3Targets=[{Path="${{ env.S3_BUCKET }}"}] \
+          || echo "Crawler already exists, skipping creation."
+
+    # Step 4: Trigger Glue Crawler
+    - name: Run Glue Crawler
+      run: |
+        aws glue start-crawler --name ${{ env.CRAWLER_NAME }}
