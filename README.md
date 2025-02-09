@@ -1,5 +1,6 @@
 # BigDataProject
-![NewProjFlow](https://github.com/user-attachments/assets/f3412cf0-61ca-4f0b-9fb9-c9ef5eb61501)
+
+![Big Data Project Architecture](https://github.com/user-attachments/assets/e9df7e9b-ae3c-40d9-84dc-f97b0cd612de)
 
 # **Amazon Customer Sales Pipeline**
 
