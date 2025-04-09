@@ -114,3 +114,39 @@ FROM "smalldatabase"."reviews"
 GROUP BY product_id, product_title
 ORDER BY avg_rating DESC
 LIMIT 10;
+```
+
+---
+
+## 8. Power BI Dashboard Summary
+
+| #  | Visualization Title          | Insight Summary                                                                 |
+|----|------------------------------|----------------------------------------------------------------------------------|
+| 1  | Hidden Gem Products          | Detects highly rated (≥ 4.5) but underexposed products (low votes), ideal for marketing boosts. |
+| 2  | Mismatch Alert               | Flags products with high star ratings but neutral review sentiment.             |
+| 3  | Verified Complaints          | Highlights poorly rated verified purchases (< 3 stars) to identify quality issues. |
+| 4  | Top Performing Categories    | Ranks product categories by positive sentiment for promotional planning.        |
+| 5  | Helpful Review Gap           | Compares total and helpful votes to assess review quality.                      |
+| 6  | Sentiment Waves              | Reveals seasonal/monthly sentiment trends.                                      |
+| 7  | Top Performers by Sentiment | Lists best-reviewed products with loyalty metrics.                              |
+| 8  | Trust Filter                 | Evaluates influence of non-verified reviews to detect manipulation.             |
+| 9  | Voice of the Unhappy         | Word cloud highlights key complaints in negative reviews.                       |
+| 10 | High-Traffic SKUs            | Shows most engaged products based on votes and reviews.                         |
+
+
+### **🧠 Business Value and Impact**
+**This report empowers Amazon’s product and marketing teams to:**
+
+**Detect and fix product issues early**
+
+**Promote underrated but high-potential items**
+
+**Build customer trust through verified insights**
+
+**Strategically allocate resources to trending and high-engagement products**
+
+**Tailor campaigns based on real-time customer sentiment**
+
+![Visualization Demo](https://github.com/Shubham9975/BigDataProject/blob/main/Insights.gif?raw=true)
+
+
